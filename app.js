@@ -1,15 +1,21 @@
-const http = require('http');
-const express = require('express'); // import express
+const path = require('path');
+
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use('/', (req, res, next) => {
-    console.log('In the another middleware!');
-    res.send('<h1>Hello from Express!</h1>');
-    // send()는 express에서 제공하는 메소드로, response를 보내는 역할을 한다.
-    // 문자열 타입은 text/html로, 객체 타입은 application/json으로 자동으로 설정된다.
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-}); // use는 미드웨어를 등록해주는 메소드
-// '/'은 항상 실행되는 미드웨어이다., path임
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, 'public'))); // 정적인 파일을 제공하는 방법
 
-app.listen(3000); // 서버를 listen하게 해주는 메소드
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+
+app.use((req, res, next) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+});
+
+app.listen(3000);
