@@ -5,11 +5,14 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', 'views');
+
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, 'public'))); // 정적인 파일을 제공하는 방법
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminData.routes);
 app.use(shopRoutes);
